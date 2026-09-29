@@ -1,0 +1,14 @@
+*
+!requirements.txt
+!Dockerfile
+!run.py
+!app/
+!app/**
+!src/
+!src/**
+!config/
+!config/experiment_config_luna_v2.yaml
+**/__pycache__/
+**/*.pyc
+**/.env
+**/config.json

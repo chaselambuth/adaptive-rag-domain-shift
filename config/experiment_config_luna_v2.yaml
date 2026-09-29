@@ -1,0 +1,44 @@
+version: luna-v2
+seed: 1729
+paths:
+  processed: data/processed/luna_v2
+  artifacts: artifacts/luna_v2
+  nq: data/raw/natural_questions/simplified-nq-train.jsonl
+  techqa: data/raw/techqa
+data:
+  nq_record_limit: 6000
+  sample_per_domain: 1000
+  max_documents_per_domain: 5000
+retrieval:
+  dense_model: sentence-transformers/all-MiniLM-L6-v2
+  reranker_model: cross-encoder/ms-marco-MiniLM-L-6-v2
+  batch_size: 32
+  candidate_depth: 50
+  rerank_depth: 10
+  top_k: 10
+  rrf_k: 60
+generation:
+  model: gpt-5.6-luna
+  reasoning_effort: none
+  max_output_tokens: 256
+  context_top_k: 5
+  context_chars_per_document: 1200
+  prompt_version: luna-v2-1
+  min_f1_for_correct: 0.5
+  # The Batch path below uses these rates, not synchronous API prices.
+  pricing_date: '2026-09-18'
+  batch_input_per_million: 0.10
+  batch_output_per_million: 0.60
+  # Explicit cache mode without breakpoints disables cache writes.
+  budget_usd: 5.00
+  reserve_headroom: 1.25
+  batch_max_input_tokens: 1000000
+  batch_max_requests: 1000
+  # Each chunk is capped at 1M conservative input units, so four active chunks
+  # remain below Luna's documented Tier-1 5M Batch queue limit.
+  batch_max_active: 4
+policy:
+  minimum_class_examples: 5
+  wrong_answer_penalty: 0.25
+  # Validation objective: task utility minus USD cost * this coefficient.
+  cost_weight: 100.0

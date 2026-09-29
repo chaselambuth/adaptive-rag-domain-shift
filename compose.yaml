@@ -1,0 +1,30 @@
+services:
+  flask:
+    build: .
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ADAPTIVE_RAG_LOCAL_FILES_ONLY: ${ADAPTIVE_RAG_LOCAL_FILES_ONLY:-false}
+    volumes:
+      - type: bind
+        source: ${ADAPTIVE_RAG_DATA_DIR:-../data/processed/luna_v2}
+        target: /app/data/processed/luna_v2
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${ADAPTIVE_RAG_ARTIFACT_DIR:-../artifacts/luna_v2}
+        target: /app/artifacts/luna_v2
+        read_only: true
+        bind:
+          create_host_path: false
+      - model-cache:/models
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=10)"]
+      interval: 30s
+      timeout: 15s
+      start_period: 90s
+      retries: 3
+volumes:
+  model-cache:

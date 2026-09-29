@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.agents/
+.codex/
+.env
+.env.*
+!.env.example
+config.json
+
+# Private datasets and generated experiment outputs are excluded from Git.
+data/
+artifacts/
+
+*.executed.ipynb

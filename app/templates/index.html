@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Adaptive RAG Explorer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Adaptive RAG Under Technical Domain Shift</p>
+          <h1>Adaptive RAG Explorer</h1>
+          <p class="subtitle">Ask a question, choose a retrieval strategy, and get an answer grounded in the local corpus.</p>
+        </div>
+        <div class="status-grid" aria-label="System status">
+          <span><b>Default Strategy</b>{{ research_findings.default_runtime_label }}</span>
+          <span><b>Generator</b>{{ research_findings.generator }}</span>
+          <span><b>Corpus</b>{{ research_findings.corpus }}</span>
+          <span><b>Frozen Policy</b>{{ research_findings.policy_version }}</span>
+        </div>
+      </header>
+
+      <section class="notice-line" title="Retrieval is limited to configured local corpora. Browsing and live search are not part of this experiment.">
+        <span class="dot"></span>
+        Controlled Corpus - No Live Web Retrieval
+      </section>
+
+      <section class="workspace">
+        <form id="ask-form" class="control-panel">
+          <div class="panel-heading">
+            <p class="section-kicker">Ask a Question</p>
+            <p>Run the selected strategy against the configured local corpus.</p>
+          </div>
+
+          <label class="field">
+            <span>Question</span>
+            <textarea id="question" name="question" rows="7" placeholder="Ask a technical question against the local TechQA corpus."></textarea>
+          </label>
+
+          <div class="examples" aria-label="Example questions">
+            {% for example in examples %}
+            <button type="button" data-question="{{ example.question }}" data-domain="{{ example.domain }}">{{ example.label }}</button>
+            {% endfor %}
+          </div>
+
+          <label class="field">
+            <span>Domain</span>
+            <select name="domain" id="domain">
+              {% for domain in domains %}
+              <option value="{{ domain }}" {% if domain == default_domain %}selected{% endif %}>
+                {{ "TechQA" if domain == "techqa" else "Natural Questions" }}
+              </option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Strategy</span>
+            <select name="mode" id="mode">
+              {% for option in strategy_options %}
+              <option value="{{ option.id }}">{{ option.label }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <p id="strategy-description" class="hint"></p>
+
+          <div class="split-controls">
+            <label class="field">
+              <span>Evidence displayed (Top K)</span>
+              <input name="top_k" id="top_k" type="number" min="1" max="10" value="5">
+            </label>
+            <label class="toggle">
+              <input name="generate" id="generate" type="checkbox" checked>
+              <span>Generate answer</span>
+            </label>
+          </div>
+
+          <p class="hint">Live queries retrieve evidence from the local corpus. Answer generation requires OPENAI_API_KEY. Answers use five documents; Top K controls display.</p>
+          <details class="advanced-control">
+            <summary>Advanced Settings</summary>
+            <label class="toggle">
+              <input id="compare-toggle" type="checkbox">
+              <span>Compare strategies after run</span>
+            </label>
+            <p class="hint">Live comparison with generation enabled may make up to three distinct paid API calls.</p>
+            <label class="toggle"><input id="use-saved" type="checkbox"><span>Replay saved experiment question</span></label>
+            <p class="hint">Optional: reuse saved answers and historical retrieval timings for an exact example question. No new API calls for saved answers.</p>
+          </details>
+
+          <button class="primary" type="submit">Run RAG</button>
+        </form>
+
+        <section class="result-panel" aria-live="polite">
+          <section id="empty-state" class="empty-state">
+            <p class="section-kicker">Ready</p>
+            <h2>Ask a question to get started.</h2>
+            <p>Your answer and supporting documents will appear here.</p>
+          </section>
+
+          <section id="decision-card" class="decision-card hidden"></section>
+          <section id="answer-card" class="answer-card hidden"></section>
+          <section id="why-card" class="info-card hidden"></section>
+          <section id="policy-card" class="info-card hidden"></section>
+          <section id="evidence-card" class="info-card hidden"></section>
+          <section id="runtime-card" class="info-card hidden"></section>
+          <section id="compare-card" class="info-card hidden"></section>
+        </section>
+      </section>
+
+      <section class="lower-panels">
+        <details>
+          <summary>Experiment results and limitations</summary>
+      <section class="metrics" aria-label="Final evaluation metrics">
+        <article class="metric-card">
+          <span>Direct</span>
+          <strong>{{ "%.3f"|format(metrics.direct_quality) }}</strong>
+          <small>Paired TechQA task success (894 examples)</small>
+        </article>
+        <article class="metric-card recommended">
+          <span>Hybrid RRF</span>
+          <strong>{{ "%.3f"|format(metrics.hybrid_quality) }}</strong>
+          <small>Paired TechQA task success</small>
+        </article>
+        <article class="metric-card">
+          <span>Adaptive Policy</span>
+          <strong>{{ "%.3f"|format(metrics.adaptive_quality) }}</strong>
+          <small>Paired TechQA task success</small>
+        </article>
+        <article class="metric-card">
+          <span>Answer Abstention</span>
+          <strong>{{ "%.1f"|format(metrics.adaptive_abstain * 100) }}%</strong>
+          <small>Adaptive output abstention, including model abstention</small>
+        </article>
+      </section>
+
+
+          <ul>
+            {% for point in research_findings.points %}
+            <li>{{ point }}</li>
+            {% endfor %}
+          </ul>
+        </details>
+        <details>
+          <summary>How this system works</summary>
+          <ol>
+            <li>Direct generation answers without retrieved context.</li>
+            <li>Hybrid RRF fuses sparse BM25 and dense retrieval over the configured corpus.</li>
+            <li>Cross-encoder reranking reorders retrieved candidates for the experimental strong-retrieval mode.</li>
+            <li>The frozen Luna policy evaluates sequential routing stages; all held-out decisions used RETRIEVE.</li>
+            <li>Abstention is shown as an explicit policy outcome as a policy or model response.</li>
+          </ol>
+        </details>
+      </section>
+    </main>
+
+    <script id="strategy-options" type="application/json">{{ strategy_options|tojson }}</script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
