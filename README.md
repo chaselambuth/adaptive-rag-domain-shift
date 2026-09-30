@@ -80,6 +80,44 @@ $env:PYTHONPATH = "src"
 python -m pytest -q
 ```
 
+### Source Datasets for a Fresh Rebuild
+
+Notebook 01 uses Google's **simplified Natural Questions training set** and IBM's **TechQA** dataset. Download them from their publishers; neither dataset is stored in this repository. The following paths are relative to the repository root.
+
+1. Create the raw-data directories:
+
+   ```powershell
+   New-Item -ItemType Directory -Force data/raw/natural_questions, data/raw/techqa | Out-Null
+   ```
+
+2. On the [official Natural Questions download page](https://ai.google.com/research/NaturalQuestions/download), choose **Simplified train set**. Save the [training archive](https://storage.cloud.google.com/natural_questions/v1.0-simplified/simplified-nq-train.jsonl.gz) as `data/raw/natural_questions/simplified-nq-train.jsonl.gz`, then decompress it:
+
+   ```powershell
+   python -m gzip -d data/raw/natural_questions/simplified-nq-train.jsonl.gz
+   ```
+
+   Notebook 01 expects the resulting `data/raw/natural_questions/simplified-nq-train.jsonl` file; the full original-format NQ download is not required.
+
+3. Follow [IBM's TechQA download instructions](https://github.com/IBM/techqa#building-a-baseline-model-for-the-techqa-dataset) and download [TechQA.tar.gz](https://huggingface.co/datasets/PrimeQA/TechQA/blob/main/TechQA.tar.gz) from **Files and versions → Download**. Extract it into `data/raw/techqa`:
+
+   ```powershell
+   tar -xzf "<path-to-your-download>/TechQA.tar.gz" -C data/raw/techqa
+   ```
+
+   The `training_and_dev`, `validation`, and `technote_corpus` folders must sit directly inside `data/raw/techqa`. If extraction creates an extra `TechQA` wrapper folder, move those three folders up one level.
+
+4. Verify the layout before running Notebook 01. Each command should print `True`:
+
+   ```powershell
+   Test-Path data/raw/natural_questions/simplified-nq-train.jsonl
+   Test-Path data/raw/techqa/training_and_dev/training_Q_A.json
+   Test-Path data/raw/techqa/training_and_dev/dev_Q_A.json
+   Test-Path data/raw/techqa/validation/validation_technotes.json
+   Test-Path data/raw/techqa/technote_corpus/full_technote_collection.sections.json
+   ```
+
+These downloads provide source data, not this project's processed tables, saved Batch answers, or trained policy. Run notebooks 01–05 to regenerate those outputs. Before Notebook 03, follow the [experiment guide](LUNA_V2_EXPERIMENT.md) to prepare and review the request plan; a fresh run makes paid API calls. To inspect the exact completed run instead, supply private copies of the frozen processed tables and artifacts at the paths in [ARTIFACTS.md](ARTIFACTS.md).
+
 Start Jupyter from the repository root and run the notebooks in order:
 
 ```powershell

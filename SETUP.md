@@ -57,4 +57,4 @@ The notebooks expect local `data/processed/luna_v2` and `artifacts/luna_v2` fold
 
 ## Fresh Data Rebuild
 
-A complete rebuild of Notebook 01 requires the original Natural Questions and TechQA source data at the paths configured in `config/experiment_config_luna_v2.yaml`. Those raw corpora are intentionally absent from this repository. The published numerical results remain in the notebooks and [case analysis](case_analysis.md); a fresh clone needs private data and outputs before the interactive app can run.
+A complete rebuild of Notebook 01 requires the original Natural Questions and TechQA source data at the paths configured in `config/experiment_config_luna_v2.yaml`. Follow the [README download and extraction steps](README.md#source-datasets-for-a-fresh-rebuild). The published numerical results remain in the notebooks and [case analysis](case_analysis.md); a fresh clone needs private data and outputs before the interactive app can run.
