@@ -28,7 +28,7 @@ with the configured 1M-per-chunk bound, this remains below Luna's documented Tie
 Interrupting that waiting cell does not cancel the provider batch; restart the kernel and rerun with `ACTION = 'run'`
 to resume collection and subsequent submissions from the saved ledger.
 
-The default local guard reserves at most **$5**, using a conservative UTF-8 input bound, capped outputs,
+The local spending guard uses a conservative UTF-8 input bound, capped outputs,
 and 25% headroom. Batch prices are configured as **$0.10 input / $0.60 output per million tokens**
 (checked September 18, 2026). This is an estimate and local guard, not a provider-enforced billing limit.
 Failed/uncertain attempts retain their reservation; retries consume an additional reservation. If the guard

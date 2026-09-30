@@ -28,9 +28,9 @@ The notebooks and operating guide are available under [experiment_notebooks/luna
 
 ## Generator Choice: Why GPT-5.6 Luna
 
-Luna was selected to make a complete, paired experiment affordable. The design requires three generation conditions for each of 1,277 questions, producing 3,831 planned calls. OpenAI positions GPT-5.6 Luna for cost-sensitive, high-volume workloads, which fits the project's question: how much can retrieval and reranking improve an economical generator under technical-domain shift? This selection is a methodological and budget decision, rather than a claim that Luna leads a model-quality benchmark. [Official Luna model documentation](https://developers.openai.com/api/docs/models/gpt-5.6-luna).
+Luna was selected to support a complete, paired experiment at scale. The design requires three generation conditions for each of 1,277 questions, producing 3,831 planned calls. Holding GPT-5.6 Luna fixed isolates the effect of retrieval and reranking under technical-domain shift. This selection is a methodological decision, rather than a claim that Luna leads a model-quality benchmark. [Official Luna model documentation](https://developers.openai.com/api/docs/models/gpt-5.6-luna).
 
-The saved configuration, dated September 18, 2026, uses Batch rates of $0.10 per million input tokens and $0.60 per million output tokens. The manifest reserves approximately $3.34 for the first pass, within a $5 local guard. Completed responses have a combined estimated token cost of approximately $0.63; this is an artifact-derived estimate, not a provider invoice. Batch's 50% discount is appropriate for offline evaluation where immediate answers are unnecessary. Its asynchronous turnaround and unavailable synchronous generation latency make it unsuitable for measuring interactive response time. The Flask application therefore uses synchronous requests for live answers and labels optional Batch replay separately. [OpenAI Batch documentation](https://developers.openai.com/api/docs/guides/batch).
+The saved configuration, dated September 18, 2026, uses Batch rates of $0.10 per million input tokens and $0.60 per million output tokens, with a local spending safeguard for submissions. Completed responses have a combined estimated token cost of approximately $0.63; this is an artifact-derived estimate, not a provider invoice. Batch's 50% discount is appropriate for offline evaluation where immediate answers are unnecessary. Its asynchronous turnaround and unavailable synchronous generation latency make it unsuitable for measuring interactive response time. The Flask application therefore uses synchronous requests for live answers and labels optional Batch replay separately. [OpenAI Batch documentation](https://developers.openai.com/api/docs/guides/batch).
 
 Keeping `gpt-5.6-luna`, reasoning none, the 256-token output cap, and the answer instructions fixed across all three conditions controls generator variation. The retrieved context changes, allowing a paired comparison of the tested retrieval strategies with this generator. The output cap also bounds cost, but may constrain longer technical explanations; incomplete responses remain unavailable rather than becoming incorrect-answer labels.
 
@@ -94,7 +94,7 @@ Retrieval increases automatic answer accuracy by 6.5 percentage points on Natura
 
 RAG also reduces answer coverage, especially on Natural Questions. The quality improvement therefore comes partly with more model abstention and should not be described as a free accuracy gain.
 
-Successful generation calls have an estimated total Batch cost of USD 0.631. The conservative all-attempt reservation was USD 3.342 within the configured USD 5 local guard. These are estimates, not provider billing records.
+Successful generation calls have an estimated total Batch cost of USD 0.631. The conservative all-attempt reservation was USD 3.342. These are estimates, not provider billing records.
 
 ## Policy Training and Validation
 
