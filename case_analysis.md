@@ -32,7 +32,7 @@ Luna was selected to make a complete, paired experiment affordable. The design r
 
 The saved configuration, dated September 18, 2026, uses Batch rates of $0.10 per million input tokens and $0.60 per million output tokens. The manifest reserves approximately $3.34 for the first pass, within a $5 local guard. Completed responses have a combined estimated token cost of approximately $0.63; this is an artifact-derived estimate, not a provider invoice. Batch's 50% discount is appropriate for offline evaluation where immediate answers are unnecessary. Its asynchronous turnaround and unavailable synchronous generation latency make it unsuitable for measuring interactive response time. The Flask application therefore uses synchronous requests for live answers and labels optional Batch replay separately. [OpenAI Batch documentation](https://developers.openai.com/api/docs/guides/batch).
 
-Keeping `gpt-5.6-luna`, reasoning `none`, the 256-token output cap, and the answer instructions fixed across all three conditions controls generator variation. The retrieved context changes, allowing a paired comparison of the tested retrieval strategies with this generator. The output cap also bounds cost, but may constrain longer technical explanations; incomplete responses remain unavailable rather than becoming incorrect-answer labels.
+Keeping `gpt-5.6-luna`, reasoning none, the 256-token output cap, and the answer instructions fixed across all three conditions controls generator variation. The retrieved context changes, allowing a paired comparison of the tested retrieval strategies with this generator. The output cap also bounds cost, but may constrain longer technical explanations; incomplete responses remain unavailable rather than becoming incorrect-answer labels.
 
 The tradeoff is limited generalizability. The low absolute TechQA accuracy can reflect generator capability, evidence quality, prompt/context limits, and lexical evaluation mismatch. These experiments do not isolate those causes, compare Luna directly with Terra or mini, establish the cheapest model at a required quality level, or prove that the routing behavior transfers to another generator. A stronger-model replication and the blind human audit would be needed to support those conclusions.
 
@@ -114,7 +114,7 @@ The chosen thresholds are `[0.00, 1.01, 0.00]`. They route all 74 validation exa
 
 ## Final Held-Out Evaluation
 
-Notebook 05 evaluates 968 paired held-out examples: 74 Natural Questions test and 894 TechQA. Because every policy action is `RETRIEVE`, adaptive results exactly match Hybrid RRF.
+Notebook 05 evaluates 968 paired held-out examples: 74 Natural Questions test and 894 TechQA. Because every policy action is RETRIEVE, adaptive results exactly match Hybrid RRF.
 
 ### Natural Questions test
 
@@ -155,13 +155,15 @@ The corrected experiment demonstrates the value of retrieval, but it does not de
 
 Static Hybrid RRF is therefore the strongest research baseline for this run. The frozen policy should remain an auditable negative result rather than being described as a successful adaptive controller.
 
-This conclusion does **not** authorize deployment. Before deployment claims, the project still needs:
+### Future Research
 
-1. Completion of the 180-row blind human answer audit.
-2. A synchronous end-to-end latency benchmark; Batch exposes no request latency.
-3. A larger source training and validation sample for policy selection.
-4. A separately defined technical-domain validation set if thresholds or models are adapted to TechQA, followed by a new untouched target test set.
-5. Evaluation of routing features designed for the long, technical query regime.
+The static Hybrid RRF baseline provides a clear starting point for studying when adaptive routing helps under technical domain shift. Follow-up work could:
+
+1. Complete the 180-row blind human answer audit to compare expert judgments with the automatic metrics.
+2. Benchmark synchronous end-to-end latency to measure the experience of interactive queries, which Batch does not capture.
+3. Expand the source training and validation samples to assess how stable policy selection is with more examples.
+4. If adapting thresholds or models to TechQA, use a separate technical-domain validation set and then evaluate on a new untouched target test set.
+5. Develop and test routing features tailored to long technical questions against the current static baseline.
 
 The corrected notebooks document the research result; their full output tables belong outside Git at `data/processed/luna_v2` and `artifacts/luna_v2`. The frozen policy remains comparison-only, and static Hybrid RRF is the strongest baseline supported by this run.
 
