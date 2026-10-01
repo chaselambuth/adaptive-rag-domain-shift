@@ -1,4 +1,4 @@
-# Corrected annotation handling, bounded corpora, and frozen Luna v2 splits.
+# Annotation-based labels, bounded corpora, and frozen Luna v2 splits.
 
 from __future__ import annotations
 
@@ -46,7 +46,7 @@ def annotation_labels(record):
     return refs, has_long or bool(refs), category
 
 
-# Create corrected NQ labels and supervision categories from raw annotations.
+# Create NQ labels and supervision categories from raw annotations.
 def corrected_nq(record, source):
     qa, docs = normalize_natural_questions([record], source_name=source, split='train')
     if qa.empty:
@@ -118,7 +118,7 @@ def split_cohort(qa, seed):
     return eligible
 
 
-# Build or load the complete corrected Luna v2 dataset artifacts.
+# Build or load the official run's dataset artifacts.
 def prepare_data(cfg):
     manifest_path = cfg['paths']['processed'] / 'dataset_manifest.json'
     raw_paths = [cfg['paths']['nq']] + sorted(cfg['paths']['techqa'].rglob('*.json'))

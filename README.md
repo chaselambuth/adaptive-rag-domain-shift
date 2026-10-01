@@ -10,7 +10,7 @@ Domain shift makes that decision harder. A policy trained on short, general-doma
 
 ## Main Result
 
-The corrected Luna v2 experiment completed 3,813 of 3,831 planned generation calls across 369 Natural Questions and 908 TechQA examples. Hybrid RRF improved paired TechQA task success from 2.9% for direct generation to 14.3%. Reranking reached similar answer quality at higher retrieval cost.
+The official GPT-5.6 Luna run completed 3,813 of 3,831 planned generation calls across 369 Natural Questions and 908 TechQA examples. Hybrid RRF improved paired TechQA task success from 2.9% for direct generation to 14.3%. Reranking reached similar answer quality at higher retrieval cost.
 
 The learned policy routed every validation and held-out example to RETRIEVE, making it operationally identical to static Hybrid RRF. This is a useful negative result: good source-domain validation performance did not produce meaningful per-query adaptation after technical-domain shift.
 
@@ -28,18 +28,18 @@ Every condition uses the same model, reasoning setting (none), and 256-token out
 
 ## Repository Contents
 
-- `experiment_notebooks/luna_v2/` — the five corrected experiment notebooks.
+- `experiment_notebooks/luna_v2/` — the five notebooks for the official run.
 - `src/adaptive_rag/luna_v2/` — Luna data, retrieval, generation, evaluation, policy, and reporting code.
 - `src/adaptive_rag/` — shared schemas, loaders, retrieval, feature, and evaluation utilities.
 - `config/experiment_config_luna_v2.yaml` — frozen experiment settings.
-- `app/` — Flask explorer connected to corrected Luna data, saved answers, and the frozen policy.
+- `app/` — Flask explorer connected to the official run's data, saved answers, and frozen policy.
 - `Dockerfile` and `compose.yaml` — CPU container serving Flask on port 5000.
 - `tests/` — experiment integrity and Flask behavior tests.
 - `data/processed/luna_v2/` and `artifacts/luna_v2/` — expected output paths for local notebook runs; the data and outputs are excluded from this repository.
 - [LUNA_V2_EXPERIMENT.md](LUNA_V2_EXPERIMENT.md) — execution order and Batch controls.
 - [ARTIFACTS.md](ARTIFACTS.md) — external data, artifact, and publication guidance.
 
-The superseded original notebooks are excluded. The Flask explorer uses the Luna artifacts rather than the original experiment outputs.
+The Flask explorer uses the official run's frozen artifacts.
 
 ## Run the Adaptive RAG Explorer
 
@@ -55,9 +55,9 @@ For live answers using an existing private `config.json` in this folder or its p
 
 For new questions, the app retrieves from the local frozen corpus. Hybrid and reranked retrieval require cached model weights; unavailable weights produce a clearly labeled fallback. Docker permits model downloads by default; set ADAPTIVE_RAG_LOCAL_FILES_ONLY=true to require cached weights. BM25-only retrieval needs no model downloads. A local .env can override that behavior. The first live hybrid query may take several minutes to initialize indexes.
 
-Saved replay is optional and uses historical Luna answers and retrieval timings. Live questions need `OPENAI_API_KEY` for optional paid generation; with no key the app still shows evidence. Strategy comparison can make up to three distinct paid calls for a new question. Successful live answers are cached in memory for the running process. Saved failed calls remain unavailable and are not retried. The UI's Top K controls displayed evidence; answer context remains five documents as in the experiment.
+Saved replay is optional and uses answers and retrieval timings from the official run. Live questions need `OPENAI_API_KEY` for optional paid generation; with no key the app still shows evidence. Strategy comparison can make up to three distinct paid calls for a new question. Successful live answers are cached in memory for the running process. Saved failed calls remain unavailable and are not retried. The UI's Top K controls displayed evidence; answer context remains five documents as in the experiment.
 
-Historical Batch costs and unavailable Batch generation latency are labeled explicitly. Live requests are separate demonstrations, not additional evaluated experiment results. The frozen policy's stage scores are not calibrated answer-confidence estimates.
+Saved Batch costs and unavailable Batch generation latency are labeled explicitly. Live requests are separate demonstrations, not additional evaluated experiment results. The frozen policy's stage scores are not calibrated answer-confidence estimates.
 
 The app requires the processed data and artifacts described in [ARTIFACTS.md](ARTIFACTS.md). Docker mounts the sibling project's `data/processed/luna_v2` and `artifacts/luna_v2` folders read-only by default. For a standalone clone, set `ADAPTIVE_RAG_DATA_DIR` and `ADAPTIVE_RAG_ARTIFACT_DIR` in a private .env to the full paths of your local copies. The app cannot start without those files; they are not included in Git or the image.
 
@@ -134,11 +134,11 @@ python -m jupyter notebook
 
 5. `05_final_domain_shift_evaluation.ipynb`
 
-The GitHub repository does not include the approximately 30.6 GB raw corpora, processed tables, or completed artifacts. To rerun the notebooks, provide the original source datasets and execute notebooks 01–05 in order. If you already have a private copy of the frozen processed tables and outputs, place them at the configured local paths before running the notebooks; completed saved Batch results can then be inspected without resubmission.
+The GitHub repository does not include the approximately 30.6 GB raw corpora, processed tables, or completed artifacts. To execute the notebooks, provide the source datasets and run notebooks 01–05 in order. If you already have a private copy of the frozen processed tables and outputs, place them at the configured local paths before running the notebooks; completed saved Batch results can then be inspected without resubmission.
 
 ## Data and Artifact Status
 
-No raw or processed datasets and no generated experiment artifacts are included in this GitHub-ready folder. The original project's copies remain outside it. `.gitignore` protects local output paths from accidental commits. The largest processed table exceeds GitHub's normal per-file limit; consult [ARTIFACTS.md](ARTIFACTS.md) before distributing any dataset-derived files.
+No raw or processed datasets and no generated experiment artifacts are included in this repository. Private copies of the official run's outputs remain outside Git. `.gitignore` protects local output paths from accidental commits. The largest processed table exceeds GitHub's normal per-file limit; consult [ARTIFACTS.md](ARTIFACTS.md) before distributing any dataset-derived files.
 
 Do not add `config.json`, `.env`, API keys, provider credentials, or the original raw datasets to the repository.
 

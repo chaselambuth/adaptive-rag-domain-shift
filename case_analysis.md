@@ -1,12 +1,12 @@
 # Adaptive RAG Under Technical Domain Shift
 
-> **Corrected Luna v2 results.** This analysis supersedes the preliminary mini-model results. The rerun uses annotation-based Natural Questions labels, training-only text features, resumable generation, paired availability handling, cumulative retrieval latency, and validation-only policy selection.
+> **Official run.** This analysis reports the GPT-5.6 Luna experiment using annotation-based Natural Questions labels, training-only text features, resumable generation, paired availability handling, cumulative retrieval latency, and validation-only policy selection.
 
 ## Executive Summary
 
-This project tests whether a routing policy trained on Natural Questions can choose among direct generation, Hybrid RRF retrieval, reranking, and abstention after transfer to TechQA. The corrected experiment uses a closed local corpus, `gpt-5.6-luna`, and saved artifacts throughout.
+This project tests whether a routing policy trained on Natural Questions can choose among direct generation, Hybrid RRF retrieval, reranking, and abstention after transfer to TechQA. The official run uses a closed local corpus, `gpt-5.6-luna`, and saved artifacts throughout.
 
-The rerun supports three conclusions:
+The results support three conclusions:
 
 1. **Retrieval materially improves generated answers.** On paired TechQA examples, answer accuracy rises from 0.5% with direct generation to 9.1% with Hybrid RRF and 9.6% with reranking. Task success rises from 2.9% to 14.3% with Hybrid RRF.
 2. **Reranking improves retrieval ordering but adds little generation benefit.** It raises Recall@5 and MRR, but its answer-accuracy gain over Hybrid RRF is only 0.8 percentage points on Natural Questions and 0.5 points on TechQA. Hybrid RRF has slightly higher TechQA task success and utility.
@@ -14,11 +14,11 @@ The rerun supports three conclusions:
 
 The final status remains **research-only**. TechQA accuracy is an automatic lexical proxy, the blind human audit is incomplete, Batch does not provide synchronous end-to-end latency, and the target-domain feature shift is extreme.
 
-## Corrected Experimental Design
+## Experimental Design
 
-The five Luna v2 notebooks run in sequence:
+The five experiment notebooks run in sequence:
 
-1. Correct annotations, construct deterministic corpora, and freeze splits.
+1. Build annotation-based labels, construct deterministic corpora, and freeze splits.
 2. Compare BM25, dense retrieval, Hybrid RRF, and cross-encoder reranking.
 3. Generate direct, Hybrid RRF, and reranked answers with resumable Batch execution.
 4. Train and freeze a three-stage policy using Natural Questions training and validation only.
@@ -34,7 +34,7 @@ The saved configuration, dated September 18, 2026, uses Batch rates of $0.10 per
 
 Keeping `gpt-5.6-luna`, reasoning none, the 256-token output cap, and the answer instructions fixed across all three conditions controls generator variation. The retrieved context changes, allowing a paired comparison of the tested retrieval strategies with this generator. The output cap also bounds cost, but may constrain longer technical explanations; incomplete responses remain unavailable rather than becoming incorrect-answer labels.
 
-The tradeoff is limited generalizability. The low absolute TechQA accuracy can reflect generator capability, evidence quality, prompt/context limits, and lexical evaluation mismatch. These experiments do not isolate those causes, compare Luna directly with Terra or mini, establish the cheapest model at a required quality level, or prove that the routing behavior transfers to another generator. A stronger-model replication and the blind human audit would be needed to support those conclusions.
+The tradeoff is limited generalizability. The low absolute TechQA accuracy can reflect generator capability, evidence quality, prompt/context limits, and lexical evaluation mismatch. These experiments do not isolate those causes, compare Luna directly with other generators, establish the cheapest model at a required quality level, or prove that the routing behavior transfers to another generator. A stronger-model replication and the blind human audit would be needed to support those conclusions.
 
 ## Data and Domain Shift
 
@@ -146,7 +146,7 @@ Natural Questions test shifts are far smaller, led by NQ-centroid similarity at 
 
 ## Interpretation and Recommendation
 
-The corrected experiment demonstrates the value of retrieval, but it does not demonstrate successful adaptive routing.
+The official run demonstrates the value of retrieval, but it does not demonstrate successful adaptive routing.
 
 - Direct generation is inadequate on TechQA.
 - Hybrid RRF provides most of the observed quality improvement and the best TechQA task success and utility among the tested routes.
@@ -165,8 +165,8 @@ The static Hybrid RRF baseline provides a clear starting point for studying when
 4. If adapting thresholds or models to TechQA, use a separate technical-domain validation set and then evaluate on a new untouched target test set.
 5. Develop and test routing features tailored to long technical questions against the current static baseline.
 
-The corrected notebooks document the research result; their full output tables belong outside Git at `data/processed/luna_v2` and `artifacts/luna_v2`. The frozen policy remains comparison-only, and static Hybrid RRF is the strongest baseline supported by this run.
+The notebooks document the official run; their full output tables belong outside Git at `data/processed/luna_v2` and `artifacts/luna_v2`. The frozen policy remains comparison-only, and static Hybrid RRF is the strongest baseline supported by the results.
 
 ## Interactive Explorer
 
-The Flask explorer uses the corrected Luna outputs described here. The primary workflow answers live questions using local retrieval. Optional saved replay displays original answers, evidence, Batch cost estimates, and retrieval timings. New live queries are labeled separately and do not change the frozen evaluation. The policy remains a research comparison: routing every held-out example to RETRIEVE does not demonstrate adaptive cost savings.
+The Flask explorer uses the official run's saved outputs. The primary workflow answers live questions using local retrieval. Optional saved replay displays saved answers, evidence, Batch cost estimates, and retrieval timings. New live queries are labeled separately and do not change the frozen evaluation. The policy remains a research comparison: routing every held-out example to RETRIEVE does not demonstrate adaptive cost savings.

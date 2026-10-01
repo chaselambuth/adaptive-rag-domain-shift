@@ -17,7 +17,7 @@ from adaptive_rag.luna_v2.policy import train_policy
 from adaptive_rag.luna_v2.report import final_evaluation
 
 
-def test_luna_notebooks_match_original_report_format():
+def test_luna_notebooks_follow_report_format():
     root = Path(__file__).resolve().parents[1]
     notebooks = sorted((root / 'experiment_notebooks/luna_v2').glob('0[1-5]_*.ipynb'))
     assert len(notebooks) == 5

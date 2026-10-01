@@ -1,4 +1,4 @@
-# Luna v2 rerun
+# Official Experiment Run
 
 Run these five notebooks in order with the project's Python environment:
 
@@ -66,9 +66,9 @@ Cost estimates assume no cache discount and include all output tokens, including
   After a hard kernel/process crash, remove `submission.lock` only once that process is confirmed stopped;
   the ledger still protects an uncertain paid submission.
 
-## Scientific changes
+## Experimental Method
 
-- Correct NQ annotation-based gold labels; join multi-span references. Keep long-only and negative-page
+- Derive NQ gold labels from annotations and join multi-span references. Keep long-only and negative-page
   examples visible in the audit, but exclude them from primary short-answer generation metrics.
 - Freeze NQ train/validation/test groups before fitting text features or observing generation outcomes.
   Keep duplicate questions and shared gold pages together. Exclude exact source/target question duplicates.
@@ -89,4 +89,4 @@ can be reused without the raw corpora or new API calls.
 
 ## Flask Explorer
 
-The Flask app serves the corrected outputs at http://localhost:5000 when the private processed data and artifacts are available. Run `docker compose up --build` from the repository root; see [SETUP.md](SETUP.md). Saved answer replay is separate from optional synchronous API generation for new questions. App interactions do not add evaluated rows to the frozen experiment.
+The Flask app serves outputs from the official run at http://localhost:5000 when the private processed data and artifacts are available. Run `docker compose up --build` from the repository root; see [SETUP.md](SETUP.md). Saved answer replay is separate from optional synchronous API generation for new questions. App interactions do not add evaluated rows to the frozen experiment.

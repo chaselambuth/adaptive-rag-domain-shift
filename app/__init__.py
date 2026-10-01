@@ -1,1 +1,1 @@
-# Flask interface for the corrected Luna experiment.
+# Flask interface for the official Luna experiment.

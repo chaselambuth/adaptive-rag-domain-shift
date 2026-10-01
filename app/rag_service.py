@@ -45,7 +45,7 @@ class LunaRAGService:
         {'id': 'bm25', 'label': 'BM25 only', 'description': 'Sparse retrieval without model downloads. Separate from the three generation conditions.'},
     ]
 
-    # Load only the corrected artifacts; reject a mismatched frozen policy.
+    # Load the official run's artifacts; reject a mismatched frozen policy.
     def __init__(self, root=None):
         self.cfg = load_config(root or Path(__file__).resolve().parents[1])
         self.qa, self.docs, self.cohort = prepare_data(self.cfg)
