@@ -77,7 +77,7 @@ Hybrid RRF captures most of the broad-recall benefit. Reranking improves Recall@
 
 Notebook 03 planned 3,831 calls across 1,277 examples and three conditions. It completed 3,813 calls (99.5%). Eighteen unavailable responses affected 14 TechQA examples; downstream comparisons remove each affected example across all conditions rather than scoring failures as wrong.
 
-Answer accuracy measures reference correctness on answerable examples. Task success also credits an exact abstention on benchmark-unanswerable examples. Coverage is the fraction of examples on which the model issued an answer. Utility assigns `+1` to a success, `-0.25` to an issued but incorrect answer, and `0` to an abstention.
+Answer accuracy measures reference correctness on answerable examples. Task success also credits an exact abstention on benchmark-unanswerable examples. Coverage is the fraction of examples on which the model issued an answer. Utility assigns +1 to a success, -0.25 to an issued but incorrect answer, and 0 to an abstention.
 
 The paired cohort contains all 369 Natural Questions examples and 894 TechQA examples.
 
@@ -108,7 +108,7 @@ Notebook 04 trains on 221 Natural Questions examples and selects models and thre
 
 The first two stages select constant predictors because the query and retrieval features do not beat the corresponding base rates on validation. The final stage selects a tree, but escalation support is sparse.
 
-The chosen thresholds are `[0.00, 1.01, 0.00]`. They route all 74 validation examples to Hybrid RRF, making the final policy static in practice. Validation task success is 44.6%, coverage is 74.3%, selective answer accuracy is 60.0%, and mean utility is 0.372.
+The chosen thresholds are [0.00, 1.01, 0.00]. They route all 74 validation examples to Hybrid RRF, making the final policy static in practice. Validation task success is 44.6%, coverage is 74.3%, selective answer accuracy is 60.0%, and mean utility is 0.372.
 
 ![Luna v2 policy stage support](experiment_notebooks/Experiment_Images_For_Case_Analysis/luna_v2_04_stage_support.png)
 
